@@ -86,10 +86,8 @@ $(document).ready(function() {
 
   $('#add-process-button').click(function(){
       var size = prompt('Enter Process Size: ');
-      if(size != '')
+      if(size)
        addNewProcess(parseInt(size));
-      else
-        alert('Enter a number greater than 1.');
   });
 
 
@@ -102,7 +100,7 @@ $(document).ready(function() {
       if(blocks[i-1].size >= s && blocks[i-1].isAlloc == false){
         console.log("Process " + num_of_processes + " can be allocated.");
         //put case for when block sizes are equal, no need to create new div
-        collection.push("Process " + num_of_processes + " allocated to main memory.");
+
         switch (type) {
           case 1: firstFit(s);
                   break;
@@ -123,17 +121,22 @@ $(document).ready(function() {
       addToQueue(s);
       debugprint();
     }
+    else{
+      collection.push("Process " + num_of_processes + " allocated to main memory.");
+    }
   }
+
 
   //adds new div - takes new div id, and the id of the div to be added after
   function addNewDiv(divid, size, after)
   {
-    if(after == -1)
-    $('<div class="memory-block" id="block-'+ divid + '"></div>').insertAfter('#block--1');
+    if(after == -1){
+    $('<div class="memory-block" id="block-'+ divid + '"> Process' + num_of_processes + '</div>').insertAfter('#block--1');
+    }
     else if (after == 0)
-      $('#block-0').append('<div class="memory-block" id="block-'+ divid + '"></div>');
+      $('#block-0').append('<div class="memory-block" id="block-'+ divid + '">Process ' + num_of_processes + '</div>');
     else
-      $('<div class="memory-block" id="block-'+ divid + '"></div>').insertAfter('#block-' + after);
+      $('<div class="memory-block" id="block-'+ divid + '">Process' + num_of_processes + '</div>').insertAfter('#block-' + after);
     //$('#block-' + divid).css('height', 100*(size/totalMemory) + "%");
     $('#block-' + divid).animate({height: 100*(size/totalMemory) + '%'}, "fast");
     $('#block-' + divid).css({"border-color": "#FFFFFF", "border-width":"2px", "border-style":"solid"});
@@ -388,6 +391,7 @@ $(document).ready(function() {
       console.log("no space before and after block");
       blocks[i-1].isAlloc = false;
       $('#block-' + blocks[i-1].divID).removeClass("memory-block");
+      document.getElementById('block-' + blocks[i-1].divID).innerHTML = "";
     }
     else if(beforeFlag == 1 && afterFlag == 1)
     {
