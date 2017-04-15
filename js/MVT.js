@@ -100,12 +100,12 @@ $(document).ready(function() {
 
   //creates new process
   function addNewProcess(s){
-    ++num_of_processes; //increment total number of processes
+
     var flag = 0; //to check if processes can be allocated or not
 
     for(var i = 1; i<=num_of_blocks; ++i){
       if(blocks[i-1].size >= s && blocks[i-1].isAlloc == false){
-        console.log("Process " + num_of_processes + " can be allocated.");
+        //console.log("Process " + num_of_processes + " can be allocated.");
         //put case for when block sizes are equal, no need to create new div
 
         switch (type) {
@@ -124,7 +124,7 @@ $(document).ready(function() {
 
     if (flag == 0){
       console.log("Process " + num_of_processes + "cannot be allocated to main memory.");
-      collection.push("Process " + num_of_processes + " cannot be allocated to main memory. It is added to the input queue.");
+      collection.push("Process cannot be allocated to main memory. It is added to the input queue.");
       addToQueue(s);
       debugprint();
     }
@@ -194,6 +194,7 @@ $(document).ready(function() {
   //First fit algorithm. Takes size of process as parameter and creates process object
   function firstFit(s)
   {
+    ++num_of_processes; //increment total number of processes
     var newP = {
       from: 0,
       to: 0,
@@ -247,6 +248,7 @@ $(document).ready(function() {
   //Worst fit algorithm. Takes size of process as parameter and creates process object
   function worstFit(s)
   {
+    ++num_of_processes; //increment total number of processes
     var max = blocks[0].size;
     var max_index = 0;
     var newP = {
@@ -303,6 +305,7 @@ $(document).ready(function() {
   //Best fit algorithm. Takes size of process as parameter and creates process object
   function bestFit(s)
   {
+    ++num_of_processes; //increment total number of processes
     var fit = blocks[0].size;
     var fit_index = 0;
 
@@ -467,8 +470,8 @@ $(document).ready(function() {
       for(j = 1; j<=num_of_blocks; j++){
         if(processes_in_queue[i-1].size <= blocks[j-1].size && blocks[j-1].isAlloc == false)
         {
-          console.log("Auto alloc to MM from queue");
-          collection.push("Process " + num_of_processes + " added from input queue to main memory. ");
+          console.log("Process added from input queue to main memory automatically. ");
+          collection.push("Process added from input queue to main memory. ");
           num_of_blocks_in_queue--;
           $('#op-data-' + processes_in_queue[i-1].divID).remove();
           switch (type) {
@@ -558,13 +561,13 @@ $(document).ready(function() {
      }else return;
    }
 
-   function scrollTypedTextDown(){
-        //document.getElementById('bottom-box').scrollTop = document.getElementById('bottom-box').scrollHeight;
-   }
+  function scrollTypedTextDown(){
+    document.getElementById('bottom-box').scrollTop = document.getElementById('bottom-box').scrollHeight;
+  }
 
-   function scrollTableDown(){
-      //  document.getElementById('top-box').scrollTop = document.getElementById('top-box').scrollHeight;
-}
+  function scrollTableDown(){
+    document.getElementById('top-box').scrollTop = document.getElementById('top-box').scrollHeight;
+  }
 
 
 function writeToTable(p){
