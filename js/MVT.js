@@ -251,6 +251,17 @@ $(document).ready(function() {
     ++num_of_processes; //increment total number of processes
     var max = blocks[0].size;
     var max_index = 0;
+
+    //finding the first unallocated block
+    for(var j = 0; j<num_of_blocks; j++)
+      if(blocks[j].isAlloc == false && blocks[j].size >= s)
+      {
+        max = blocks[j].size;
+        max_index = j;
+        break;
+      }
+
+
     var newP = {
       from: 0,
       to: 0,
@@ -311,10 +322,11 @@ $(document).ready(function() {
 
     //finding the first unallocated block
     for(var j = 0; j<num_of_blocks; j++)
-      if(blocks[j].isAlloc == false)
+      if(blocks[j].isAlloc == false && blocks[j].size >= s)
       {
         fit = blocks[j].size;
         fit_index = j;
+        break;
       }
 
     //create new process object
