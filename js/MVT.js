@@ -23,7 +23,7 @@ var blocks = [{
   divID: 0
 }];
 //variables required for the terminal-text-box
-var collection = ['Let\'s begin'];
+var collection = ['Select the type of fit'];
 var write = 0;
 var flag2 = false;
 
@@ -77,17 +77,20 @@ $(document).ready(function() {
       $('#best-fit-select').attr('disabled','');
       $('#worst-fit-select').attr('disabled','');
       type = 1;
+      collection.push('First Fit selected.');
   });
 
   $('#best-fit-select').click(function(){
       $('#first-fit-select').attr('disabled','');
       $('#worst-fit-select').attr('disabled','');
+      collection.push('Best Fit selected.');
       type = 2;
   });
 
   $('#worst-fit-select').click(function () {
       $('#best-fit-select').attr('disabled','');
       $('#first-fit-select').attr('disabled','');
+      collection.push('Worst Fit selected.');
       type = 3;
   });
 
@@ -305,7 +308,7 @@ $(document).ready(function() {
     //create a new div corresponding to block with new div id
     var afterWhere;
     if(max_index == 0)
-      afterWhere = 0;
+      afterWhere = -1;
     else
       afterWhere = blocks[max_index-1].divID;
     addNewDiv(newP.divID, newP.size, afterWhere);
@@ -373,7 +376,7 @@ $(document).ready(function() {
     //create a new div corresponding to block with new div id
     var afterWhere;
     if(fit_index == 0)
-      afterWhere = 0;
+      afterWhere = -1;
     else
       afterWhere = blocks[fit_index-1].divID;
     addNewDiv(newP.divID, newP.size, afterWhere);
