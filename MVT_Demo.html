@@ -4,16 +4,16 @@
     <!-- CSS Additional Files -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
 
 
     <!-- JavaScript Additional Files -->
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/typeit.js'"></script>
+    <script src="js/typeit.js"></script>
     <script src="js/MVT.js"></script>
     <script src="js/typed.js"></script>
-    <script src="js/typeit.js"></script>
 
     <title></title>
 
@@ -42,7 +42,6 @@
               <div class="col-sm-6">
                   <h4>Input Queue</h4>
                   <div id="input-q-box">
-
                   </div>
                   <br>
                   <button class="btn btn-info" id="add-process-button">Add Process</button>
@@ -50,7 +49,18 @@
           </div>
           <div class="col-sm-6" id="right-box">
               <div class="row" id="top-box">
-
+                  <h3>Output Table</h3>
+                  <table class="table table-striped" id="output-table">
+                    <thead>
+                      <tr>
+                        <th>Process No.</th>
+                        <th>Process Size</th>
+                        <th>Allocation Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
               </div>
               <div class="row" id="bottom-box">
                 <div id="terminal-header" style="text-align: center;">

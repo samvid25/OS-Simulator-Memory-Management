@@ -1,49 +1,40 @@
+//all global variables
+window.tot = 0;
+var totalMemory = 1000;
+var totalMemoryQueue = 2000;
+var num_of_processes = 0;
+var total_blocks = 1; //including deleted
+var total_blocks_queue = 1;
+var num_of_blocks = 1;
+var num_of_blocks_in_queue = 1;
+var queue_div = 200;
+var processes_in_queue = [{
+  size: 0,
+  divID: 0
+}];
+//list of all blocks (/divs)
+var blocks = [{
+  from: 0,
+  to: 999,
+  size: 1000,
+  isAlloc: false,
+  processID: 0,
+  index: 0,
+  divID: 0
+}];
+//variables required for the terminal-text-box
+var collection = ['Let\'s begin'];
+var write = 0;
+var flag2 = false;
+
+
 $(document).ready(function() {
 
-  //variables required for the terminal-text-box
-  var collection = ['Let\'s begin'];
-  var write = 0;
-  var flag2 = false;
-
-  //all initial animations
-  $("#input-q-box").animate({height: '75%'}, "ease");
-  $("#block-0").animate({height: '90%'}, "ease");
-
-  //all global variables
-  var totalMemory = 1000;
-  var num_of_processes = 0;
-  var total_blocks = 1; //including deleted
-  var total_blocks_queue = 1;
-  var num_of_blocks = 1;
-  var num_of_blocks_in_queue = 1;
-  var processes_in_queue = [{
-    size: 0,
-    divID: 0
-  }];
-  //list of all blocks (/divs)
-  var blocks = [{
-    from: 0,
-    to: 999,
-    size: 1000,
-    isAlloc: false,
-    processID: 0,
-    index: 0,
-    divID: 0
-  }];
-
-  //debugging functions - to be removed later
-  function debugprint()
-  {
-    var i;
-    for(i = 0; i<num_of_blocks; i++)
-      console.log("Div ID: " + blocks[i].divID + " Index: " + i + " Size: " + blocks[i].size + " From:" + blocks[i].from + " To:" + blocks[i].to + " Alloc: " + blocks[i].isAlloc);
-  }
-
   //gets total memory from user and sets the memory block
-  function getMemory() {
+  //function getMemory() {
     $('#data-input-content-1').delay(1500).fadeIn('slow');
-    $('#input-memory-submit').click(function(e) {
-      totalMemory = parseInt($('memory').val());
+    $(document).on('click', '#input-memory-submit', function(e, totalMemory) {
+      totalMemory = parseInt($('#memory').val());
       //sets the inital block (block 0)
       blocks[0].to = totalMemory-1;
       blocks[0].processID = NaN;
@@ -55,9 +46,25 @@ $(document).ready(function() {
       if(confirm){
         $('#data-input-content-1').fadeOut('fast');
       }
+      location.href = "MVT_Demo.html";
+      console.log(totalMemory);
     })
-  }
+  //}
 
+  //getMemory();
+  console.log(totalMemory);
+
+  //all initial animations
+  $("#input-q-box").animate({height: '75%'}, "ease");
+  $("#block-0").animate({height: '90%'}, "ease");
+
+  //debugging functions - to be removed later
+  function debugprint()
+  {
+    var i;
+    for(i = 0; i<num_of_blocks; i++)
+      console.log("Div ID: " + blocks[i].divID + " Index: " + i + " Size: " + blocks[i].size + " From:" + blocks[i].from + " To:" + blocks[i].to + " Alloc: " + blocks[i].isAlloc);
+  }
 
   var type = 0; //indicates type of fit
 
@@ -230,6 +237,8 @@ $(document).ready(function() {
         else
           afterWhere = blocks[i-2].divID;
         addNewDiv(newP.divID, newP.size, afterWhere);
+        writeToTable(newP);
+        incompleteAllocationStatus(newP.divID);
         break;
       }
     }
@@ -287,7 +296,8 @@ $(document).ready(function() {
     else
       afterWhere = blocks[max_index-1].divID;
     addNewDiv(newP.divID, newP.size, afterWhere);
-
+    writeToTable(newP);
+    incompleteAllocationStatus(newP.divID);
   }
 
   //Best fit algorithm. Takes size of process as parameter and creates process object
@@ -352,6 +362,8 @@ $(document).ready(function() {
     else
       afterWhere = blocks[fit_index-1].divID;
     addNewDiv(newP.divID, newP.size, afterWhere);
+    writeToTable(newP);
+    incompleteAllocationStatus(newP.divID);
     debugprint();
   }
 
@@ -365,6 +377,9 @@ $(document).ready(function() {
         break;
       }
     }
+    blocks[i-1].isAlloc = false;
+    completionAllocatedStatus(blocks[i-1].divID);
+    blocks[i-1].isAlloc = true;
     collection.push("Process " + blocks[i-1].processID + " is completed.");
 
     //variables to check if there are free spaces before and after the blocks assigned to the process
@@ -455,6 +470,7 @@ $(document).ready(function() {
           console.log("Auto alloc to MM from queue");
           collection.push("Process " + num_of_processes + " added from input queue to main memory. ");
           num_of_blocks_in_queue--;
+          $('#op-data-' + processes_in_queue[i-1].divID).remove();
           switch (type) {
             case 1: $('#qblock-'+processes_in_queue[i-1].divID).remove();
                     firstFit(processes_in_queue[i-1].size);
@@ -480,21 +496,26 @@ $(document).ready(function() {
   function addToQueue(s){
     var newVar = {
       size: s,
-      divID: total_blocks_queue
+      divID: queue_div,
+      processID: '-',
+      isAlloc: false
     };
     processes_in_queue.splice(0, 0, newVar);
 
-    $('#input-q-box').append('<div class="memory-block" id="qblock-'+ total_blocks_queue + '"></div>');
-    $('#qblock-' + total_blocks_queue).animate({height: 100*(s/600) + '%'}, "fast");
-    $('#qblock-' + total_blocks_queue).css({"border-color": "#FFFFFF", "border-width":"2px", "border-style":"solid"});
-
+    $('#input-q-box').append('<div class="memory-block" id="qblock-'+ queue_div + '"></div>');
+    $('#qblock-' + queue_div).animate({height: 100*(s/totalMemoryQueue) + '%'}, "fast");
+    $('#qblock-' + queue_div).css({"border-color": "#FFFFFF", "border-width":"2px", "border-style":"solid"});
+    writeToTable(newVar);
+    $('#op-data-'+ newVar.divID).css('background','rgb(66, 134, 244)   ');
     total_blocks_queue++;
+    queue_div++;
     num_of_blocks_in_queue++;
   }
 
 
   //Functions to handle the terminal-text-box
   setInterval(callWriteTo,1000);
+  setInterval(scrollTypedTextDown, 500);
 
    function writeTo(){
        flag2 = true;
@@ -531,20 +552,47 @@ $(document).ready(function() {
    }
 
    function callWriteTo(){
-       if (check() && (flag2 == false)) {
-           writeTo();
-           return;
-       }else return;
+     if (check() && (flag2 == false)) {
+         writeTo();
+         return;
+     }else return;
    }
 
    function scrollTypedTextDown(){
-        var elem = document.getElementById('terminal-body');
-        elem.scrollTop = elem.scrollHeight;
+        //document.getElementById('bottom-box').scrollTop = document.getElementById('bottom-box').scrollHeight;
    }
 
    function scrollTableDown(){
-        var elem = document.getElementById('top-box');
-        elem.scrollTop = elem.scrollHeight;
+      //  document.getElementById('top-box').scrollTop = document.getElementById('top-box').scrollHeight;
+}
+
+
+function writeToTable(p){
+     var tableBody = '#output-table > tbody';
+     $(tableBody).append('<tr id="op-data-' + p.divID + '">' +
+         '<td id="id">' + p.processID + '</td>' +
+         '<td id="size">' + p.size + '</td>' +
+         '<td id="status">' + p.isAlloc + '</td>' +
+         '</tr>');
+     scrollTableDown();
+ }
+
+ function editAllocationStatus(p){
+     if(p.isAlloc == true){
+         $('#op-data-'+ p.divID + ' #status').html('<i class="fa fa-check-circle" aria-hidden="true"></i>');
+     }else if(p.isAlloc == false){
+         $('#op-data-'+ p.divID +' #status').html('<i class="fa fa-times-circle" aria-hidden="true"></i>');
+     }
+ }
+
+ function completionAllocatedStatus(id){
+     $('#op-data-'+ id +' #status').html('<i class="fa fa-check-circle" style="color:purple" aria-hidden="true"></i>');
+     $('#op-data-'+ id).css('background','rgba(0, 128, 3, 0.44)');
+ }
+
+ function incompleteAllocationStatus(id) {
+     $('#op-data-'+ id +' #status').html('<i class="fa fa-times-circle" style="color:dimgray" aria-hidden="true"></i>');
+     $('#op-data-'+ id).css('background','rgb(229, 50, 78)  ');
 }
 
 })

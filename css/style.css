@@ -72,7 +72,9 @@
   background-color: black;
   color: white;
   font-family: monospace;
+  overflow-y: auto;
 }
+
 
 h4{
   font-family: cursive;
@@ -117,6 +119,27 @@ h4{
 }
 
 #top-box{
+    overflow-y: auto;
+    max-height: 50%;
     height: 50%;
+    text-align: center;
     border-bottom: 1px solid black;
+}
+
+.is-hidden{
+    display: none !important;
+}
+
+.fa-check-circle{
+    color: green;
+    -moz-transition: height 0.5s linear;
+    -webkit-transition: height 0.5s linear;
+}
+
+.fa-times-circle{
+    color: red;
+}
+
+th{
+  text-align: center;
 }
