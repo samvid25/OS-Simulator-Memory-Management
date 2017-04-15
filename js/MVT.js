@@ -2,6 +2,8 @@
 window.tot = 0;
 var totalMemory = 1000;
 var totalMemoryQueue = 2000;
+var MMfree = 0;
+var IQfree = 0;
 var num_of_processes = 0;
 var total_blocks = 1; //including deleted
 var total_blocks_queue = 1;
@@ -100,6 +102,16 @@ $(document).ready(function() {
        addNewProcess(parseInt(size));
   });
 
+  function findTotalFree(){
+    MMfree = 0;
+    IQfree = totalMemoryQueue;
+    for(var i = 0; i<num_of_blocks; i++)
+      if(blocks[i].isAlloc == false)
+        MMfree+=blocks[i].size;
+
+    for(var i = 0; i<num_of_blocks_in_queue; i++)
+      IQfree -= processes_in_queue[i].size;
+  }
 
   //creates new process
   function addNewProcess(s){
@@ -126,10 +138,19 @@ $(document).ready(function() {
     }
 
     if (flag == 0){
+      findTotalFree();
       console.log("Process " + num_of_processes + "cannot be allocated to main memory.");
-      collection.push("Process cannot be allocated to main memory. It is added to the input queue.");
-      addToQueue(s);
-      debugprint();
+      if(s > MMfree+IQfree){
+        collection.push("Process size exceeds total free space available in both Main Memory and Input Queue.");
+        collection.push("It cannot be allocated.");
+      }
+      else{
+        collection.push("Process cannot be allocated to main memory. It is added to the input queue.");
+        findTotalFree();
+        if(MMfree > s) collection.push("External fragmentation: " + (MMfree - s));
+        addToQueue(s);
+        debugprint();
+      }
     }
     else{
       collection.push("Process " + num_of_processes + " allocated to main memory.");
